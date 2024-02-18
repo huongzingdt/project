@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<suite name="Suite" >
+    <test thread-count="2" name="Demo">
+        <classes>
+            <class name="tests.TC01VerifyLogin"></class>
+            <class name = "tests.TC03"></class>
+        </classes>
+    </test>
+</suite>
