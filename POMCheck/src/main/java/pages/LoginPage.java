@@ -11,28 +11,33 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    @FindBy(id="field_id__1")
+    @FindBy(tagName="button")
+    private WebElement directLogin;
+
+    @FindBy(id="identifierId")
     private WebElement username;
 
-    @FindBy(id="field_id__2")
+    @FindBy(xpath = "//span[@class = 'VfPpkd-vQzf8d' and contains (text(), 'Next')]")
+    private WebElement nextButton;
+
+    @FindBy(name = "Passwd")
     private WebElement password;
 
-    @FindBy(xpath = "//input[@type='submit']")
-    private WebElement loginButton;
 
-    @FindBy(xpath = "//a[contains(text(),'Forgot')]")
-    private WebElement forgotPassword;
 
     public void navigateUrl(String url){
         getDriver().get(url);
-        getWait().until(ExpectedConditions.visibilityOf(username));
+        getWait().until(ExpectedConditions.visibilityOf(directLogin));
+        directLogin.click();
     }
 
     public void login(String u, String p){
         getWait().until(ExpectedConditions.visibilityOf(username));
-        username.sendKeys("admin");
-        password.sendKeys("scipio");
-        loginButton.click();
+        username.sendKeys(u);
+        nextButton.click();
+        getWait().until(ExpectedConditions.visibilityOf(password));
+        password.sendKeys(p);
+        nextButton.click();
     }
 
 }
