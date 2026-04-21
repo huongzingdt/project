@@ -11,17 +11,12 @@ public class TC01 extends BaseTest {
     public void tc04(){
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.navigateUrl("https://bodapark.ai/");
-       // loginPage.login("dohuong8888@gmail.com", "05101988dothihuong");
+        loginPage.login("dohuong8888@gmail.com", "05101988dothihuong");
 
        DashboardPage dashboardPage = new DashboardPage(getDriver());
        Assert.assertTrue(dashboardPage.verifyLoginSuccess());
+
        dashboardPage.configStep1();
-//
-//        MarketingPage marketingPage = new MarketingPage(getDriver());
-//        Assert.assertTrue(marketingPage.verifyGotoMarketingPageSuccess());
-//
-//        marketingPage.inputNewCamp();
-//        marketingPage.verifyCreateCampSuccess();
 
     }
 }

@@ -1,6 +1,7 @@
 package pages;
 
 import core.BasePage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,74 +13,45 @@ public class DashboardPage extends BasePage {
         super(driver);
     }
 
-    @FindBy(xpath = "//h3[contains(text(), 'AI Story Video')]")
-    private WebElement aiStoryVideo;
+    private By aiStoryVideo = By.xpath("//h3[contains(text(), 'AI Story Video')]");
+    private By aiAvatarVideo = By.xpath("//h3[contains(text(), 'AI Avatar Video')]");
+    private By aiVideoEditor = By.xpath("//h3[contains(text(), 'AI Video Editor')]");
+    private By aiImageVideo = By.xpath("//h3[contains(text(), 'AI Image/Video')]");
+    private By titleAIStoryVideo = By.xpath("//span[contains(text(), 'AI Story Video')]");
+    private By chatArea = By.tagName("textarea");
 
-    @FindBy(xpath = "//h3[contains(text(), 'AI Avatar Video')]")
-    private WebElement aiAvatarVideo;
+    private By buttonGenerateScript = By.xpath(" //*[@id=\"root\"]/div/div[2]/div/div/div/div/div[4]/div[2]/div/div[1]/div[4]/div/button");
+    private By lineReadyToGenerate = By.xpath("//span[contains(text(),'Ready to generate. Press the → button in the chat input to proceed.')]");
+    private By buttonUseAsIs = By.xpath("//button[contains (text(),'Use as is')]");
+    private By ratio = By.xpath("(//button)[13]");
+    private By cinematicStyle = By.xpath("(//img)[1]");
+    private By narrationVoice = By.xpath("(//button)[18]");
+    private By nextToStep02 = By.xpath("//span[contains(text(), 'Next: Generate Key Image')]");
 
-    @FindBy(xpath = "//h3[contains(text(), 'AI Video Editor')]")
-    private WebElement aiVideoEditor;
+    private By popupClaimReward = By.xpath("//button[contains(text(), '✕')]");
 
-    @FindBy(xpath = "//h3[contains(text(), 'AI Image/Video')]")
-    private WebElement aiImageVideo;
-
-    @FindBy(xpath = "//span[contains(text(), 'AI Story Video')]")
-    private WebElement titleAIStoryVideo;
-
-    @FindBy(tagName = "textarea")
-    private WebElement chatArea;
-
-    @FindBy(xpath = "(//button)[12]")
-    private WebElement buttonGenerateScript;
-
-    @FindBy(xpath = "//span[contains(text(),'Ready to generate. Press the → button in the chat input to proceed.')]")
-    private WebElement lineReadyToGenerate;
-
-    @FindBy(xpath = "//button[contains (text(),'Use as is')]")
-    private WebElement buttonUseAsIs;
-
-    @FindBy(xpath = "(//button)[13]")
-    private WebElement ratio;
-
-    @FindBy(xpath = "(//img)[1]")
-    private WebElement cinematicStyle;
-
-    @FindBy(xpath = "(//button)[18]")
-    private WebElement narrationVoice;
-
-    @FindBy(xpath = "//span[contains(text(), 'Next: Generate Key Image')]")
-    private WebElement nextToStep02;
 
     public boolean verifyLoginSuccess(){
-        getWait().until(ExpectedConditions.visibilityOf(aiStoryVideo));
-        return aiStoryVideo.isDisplayed() && aiAvatarVideo.isDisplayed() && aiVideoEditor.isDisplayed() && aiImageVideo.isDisplayed();
+        getWait().until(ExpectedConditions.visibilityOfElementLocated(aiStoryVideo));
+        return getDriver().findElement(aiAvatarVideo).isDisplayed() && getDriver().findElement(aiVideoEditor).isDisplayed()
+                && getDriver().findElement(aiImageVideo).isDisplayed();
     }
 
     public void configStep1(){
     //Chat and generate the script
-        getWait().until(ExpectedConditions.visibilityOf(aiStoryVideo));
-        aiStoryVideo.click();
-        getWait().until(ExpectedConditions.visibilityOf(titleAIStoryVideo));
-        chatArea.click();
-        chatArea.sendKeys("Dog food" + Keys.ENTER);
-        getWait().until(ExpectedConditions.visibilityOf(lineReadyToGenerate));
+        closePopupIfPresent (popupClaimReward);
+        clickElement(aiStoryVideo);
 
-        buttonGenerateScript.click();
-        getWait().until(ExpectedConditions.visibilityOf(buttonUseAsIs));
-        buttonUseAsIs.click();
+        sendKeys(chatArea, "Dog food");
+        clickElement(buttonGenerateScript);
+        clickElement(buttonUseAsIs);
+
     //Select the ratio and style
-        getWait().until(ExpectedConditions.visibilityOf(ratio));
-        ratio.click();
-        getWait().until(ExpectedConditions.visibilityOf(cinematicStyle));
-        cinematicStyle.click();
+        clickElement(ratio);
+        clickElement(cinematicStyle);
    //Select the voice
-        getWait().until(ExpectedConditions.visibilityOf(narrationVoice));
-        narrationVoice.click();
-
+        clickElement(narrationVoice);
     //Go to step 02
-        getWait().until(ExpectedConditions.visibilityOf(nextToStep02));
-        nextToStep02.click();
-
+        clickElement(nextToStep02);
     }
 }
