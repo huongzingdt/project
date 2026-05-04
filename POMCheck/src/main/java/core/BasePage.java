@@ -17,8 +17,8 @@ public class BasePage {
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         PageFactory.initElements(driver, this);
     }
 
@@ -43,13 +43,14 @@ public class BasePage {
         // Tìm element ngay trong quá trình wait để đảm bảo lấy được bản thực thể mới nhất trên DOM
         wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(by));
-        highlightElement(element);
+       // highlightElement(element);
         element.click();
     }
 
     protected void sendKeys(By by, String text) {
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));
         element.clear();
+        element.click();
         element.sendKeys(text);
     }
 

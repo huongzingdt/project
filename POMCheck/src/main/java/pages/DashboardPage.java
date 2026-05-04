@@ -18,9 +18,9 @@ public class DashboardPage extends BasePage {
     private By aiVideoEditor = By.xpath("//h3[contains(text(), 'AI Video Editor')]");
     private By aiImageVideo = By.xpath("//h3[contains(text(), 'AI Image/Video')]");
     private By titleAIStoryVideo = By.xpath("//span[contains(text(), 'AI Story Video')]");
-    private By chatArea = By.tagName("textarea");
+    private By chatArea = By.xpath("//div/input");
 
-    private By buttonGenerateScript = By.xpath(" //*[@id=\"root\"]/div/div[2]/div/div/div/div/div[4]/div[2]/div/div[1]/div[4]/div/button");
+    private By buttonGenerateScript = By.xpath("(//div/button)[5]");
     private By lineReadyToGenerate = By.xpath("//span[contains(text(),'Ready to generate. Press the → button in the chat input to proceed.')]");
     private By buttonUseAsIs = By.xpath("//button[contains (text(),'Use as is')]");
     private By ratio = By.xpath("(//button)[13]");
@@ -39,7 +39,7 @@ public class DashboardPage extends BasePage {
 
     public void configStep1(){
     //Chat and generate the script
-        closePopupIfPresent (popupClaimReward);
+        //closePopupIfPresent (popupClaimReward);
         clickElement(aiStoryVideo);
 
         sendKeys(chatArea, "Dog food");

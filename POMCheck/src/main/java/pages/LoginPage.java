@@ -15,7 +15,7 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
-    private By directLogin = By.tagName("button");
+    private By directLogin = By.xpath("//button[contains (text(), 'Get Started — It’s Free')]");
     private By username = By.id("identifierId");
     private By nextButton = By.xpath("//span[@class = 'VfPpkd-vQzf8d' and contains (text(), 'Next')]");
     private By password = By.tagName("Passwd");
@@ -23,13 +23,14 @@ public class LoginPage extends BasePage {
 
 
 
-    public void navigateUrl(String url){
+    public void navigateUrl(String url) {
        getDriver().get(url);
        waitForPageLoad();
-       clickElement(directLogin);
     }
 
-    public void login(String u, String p){
+
+    public void login(By directLogin, String u, String p){
+       clickElement(directLogin);
        sendKeys(username, u);
        clickElement(nextButton);
 

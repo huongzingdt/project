@@ -8,14 +8,14 @@ import pages.LoginPage;
 
 public class TC01 extends BaseTest {
     @Test
-    public void tc04(){
+    public void doStoryBoard() throws InterruptedException {
+        //Login vào dashboard
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.navigateUrl("https://bodapark.ai/");
-        loginPage.login("dohuong8888@gmail.com", "05101988dothihuong");
+  //     loginPage.login("dohuong8888@gmail.com", "05101988dothihuong");
 
        DashboardPage dashboardPage = new DashboardPage(getDriver());
        Assert.assertTrue(dashboardPage.verifyLoginSuccess());
-
        dashboardPage.configStep1();
 
     }

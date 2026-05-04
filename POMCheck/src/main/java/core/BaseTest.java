@@ -34,6 +34,7 @@ public class BaseTest {
         options.setExperimentalOption("useAutomationExtension", false);
 
         try {
+
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
         } catch (Exception e) {
