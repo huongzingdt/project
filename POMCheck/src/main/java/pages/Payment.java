@@ -6,6 +6,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+
+import java.util.List;
 
 public class Payment extends BasePage {
     public Payment(WebDriver driver) {
@@ -23,31 +26,27 @@ public class Payment extends BasePage {
     private By cvcCard = By.id("payment-cvcInput");
     private By hoderCard = By.name("customer_name");
 
+    private By myAccountMenu = By.xpath("//div/span[contains(text(), 'My')]");
+    private By currentCredit = By.xpath("//div[contains(., 'Credits:')]");
+
+
+
     public void buyBasic(){
 
             clickElement(pricingMenu);
             clickElement(buyBasic);
             clickElement(submitBuyAction);
-
-            // 1. Nhập các thông tin ở trang chính trước cho chắc chắn
             sendKeys(emailBuyer, "dohuong8888@gmail.com");
-
-            // 2. Chờ và nhảy vào iframe của Stripe
-            // Lưu ý: Đảm bảo By.xpath("//iframe[contains(@name, 'privateStripeFrame')]") trả về đúng 1 kết quả
             getWait().until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
                     By.xpath("//iframe[contains(@name, 'privateStripeFrame')]")
             ));
 
-            // 3. Nhập dữ liệu bên trong iframe (Dùng chuỗi số liền nhau)
             sendKeys(cardNumber, "4242424242424242");
-            sendKeys(expiryDateCard, "1228"); // Thường Stripe chỉ cần MMYY, không cần dấu /
+            sendKeys(expiryDateCard, "1228");
             sendKeys(cvcCard, "100");
-
-            // 4. Thoát khỏi iframe để quay về trang chính
             getDriver().switchTo().defaultContent();
             sendKeys(hoderCard, "Do Thi Huong");
 
-        // Click để mở danh sách
         WebElement dropdown = getDriver().findElement(By.xpath("//button[@role='combobox']"));
         dropdown.click();
 
@@ -55,15 +54,12 @@ public class Payment extends BasePage {
                 By.xpath("//*[contains(@role, 'option')]//*[contains(text(), 'Alba')]")
         ));
 
-// 3. Sử dụng JavaScript để click nếu click thông thường bị chặn
         try {
             option.click();
         } catch (Exception e) {
             JavascriptExecutor js = (JavascriptExecutor) getDriver();
             js.executeScript("arguments[0].click();", option);
         }
-
-        // 5. Click nút Pay Now (Nút này nằm ở trang chính)
             WebElement btnPay = getWait().until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[contains(., 'Pay now')]")
             ));
@@ -73,38 +69,22 @@ public class Payment extends BasePage {
     }
 
     public void buyPackage(String packageName) {
-        // 1. Mở menu Pricing
         clickElement(pricingMenu);
-
-        // 2. Click vào nút "Get 50% Off Now" dựa trên tên gói (Basic, Standard, Pro, Ultimate)
-        // XPath này sẽ tìm đúng khối div chứa tên gói và click vào button bên trong đó
         String packageBtnXpath = String.format("//div[h3[contains(text(), '%s')]]//button", packageName);
         WebElement btnBuy = getWait().until(ExpectedConditions.elementToBeClickable(By.xpath(packageBtnXpath)));
         btnBuy.click();
-
-        // Tiếp tục luồng thanh toán
         clickElement(submitBuyAction);
         sendKeys(emailBuyer, "dohuong8888@gmail.com");
-
-        // 3. Xử lý Iframe Stripe
         getWait().until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
                 By.xpath("//iframe[contains(@name, 'privateStripeFrame')]")
         ));
-
         sendKeys(cardNumber, "4242424242424242");
         sendKeys(expiryDateCard, "1228");
         sendKeys(cvcCard, "100");
-
-        // 4. Thoát Iframe về trang chính
         getDriver().switchTo().defaultContent();
-
-        // Nhập tên chủ thẻ
         sendKeys(hoderCard, "Do Thi Huong");
-
-        // 5. Xử lý Dropdown quốc gia
         WebElement dropdown = getWait().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@role='combobox']")));
         dropdown.click();
-
         WebElement option = getWait().until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[contains(@role, 'option')]//*[contains(text(), 'Alba')]")
         ));
@@ -120,16 +100,38 @@ public class Payment extends BasePage {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-        // 6. Click nút Pay Now và đợi chuyển hướng
         WebElement btnPay = getWait().until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(., 'Pay now')]")
         ));
         btnPay.click();
 
-        // Đợi và click Go to Dashboard
         getWait().until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(text(), 'Go to Dashboard')]")
         )).click();
     }
+
+    public double checkCurrentCredit() {
+        clickElement(myAccountMenu);
+        List<WebElement> elements = getDriver().findElements(By.xpath("//div[contains(., 'Credits:')]"));
+
+        for (WebElement el : elements) {
+            String text = el.getText();
+            if (text.contains("Credits:") && text.matches(".*\\d+.*") && !text.contains("+")) {
+                String cleanNumber = text.replaceAll("[^0-9]", "");
+                return Double.parseDouble(cleanNumber);
+            }
+        }
+        return 0;
+    }
+
+    public void verifyCreditAdded(String packageName, double expectedAddedAmount){
+        double creditBefore = checkCurrentCredit();
+        System.out.println("Credit truoc khi mua: " + creditBefore);
+        buyPackage(packageName);
+        double creditAfter = checkCurrentCredit();
+        System.out.println("Credit sau khi mua: " + creditAfter);
+        double actualAdded = creditAfter - creditBefore;
+        Assert.assertEquals(actualAdded, expectedAddedAmount, "Credit added not correctly");
+    }
+
 }
