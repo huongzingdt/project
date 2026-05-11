@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Factory;
 
+import java.sql.Time;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,13 @@ public class BasePage {
 
 
     public void waitForPageLoad() {
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         wait.until(d -> ((JavascriptExecutor) d)
                 .executeScript("return document.readyState").equals("complete"));
     }
@@ -163,6 +171,19 @@ public class BasePage {
             }
         } catch (Exception e) {
             // Không tìm thấy popup thì im lặng chạy tiếp
+        }
+    }
+
+    public void waitForImageGenerating(By loadingLocator){
+        WebDriverWait longWait = new WebDriverWait(getDriver(), Duration.ofSeconds(600));
+        try{
+            System.out.println("Bắt đầu đợi ảnh generate ");
+            longWait.until(ExpectedConditions.invisibilityOfElementLocated(loadingLocator));
+            System.out.println("success");
+
+        } catch (TimeoutException e) {
+            System.out.println("Fail");
+            throw new TimeoutException(e);
         }
     }
 }

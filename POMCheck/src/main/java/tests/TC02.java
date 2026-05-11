@@ -8,6 +8,9 @@ import pages.Payment;
 public class TC02 extends BaseTest {
     @Test
      public void buyBasic() {
+        //Login page
+        //Go to Payment page
+        //Buy success BASIC, STANDARD, PRO, ULTIMATE
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.navigateUrl("https://bodapark.ai/");
 

@@ -8,6 +8,9 @@ import pages.Payment;
 public class TC03 extends BaseTest {
     @Test
     public void buyBasic() {
+        //Login
+        //Verify the amount credit be added success
+
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.navigateUrl("https://bodapark.ai/");
 
